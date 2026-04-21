@@ -1,5 +1,13 @@
 import { Transaction, UserStats } from '../types';
 
+export const INITIAL_STATS: UserStats = {
+  creditScore: 50,
+  streakDays: 0,
+  totalCollections: 0,
+  lastActiveDate: '',
+  badges: []
+};
+
 /**
  * Lenden Gamification Algorithm
  * 

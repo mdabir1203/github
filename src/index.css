@@ -1,40 +1,71 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Syne:wght@400;700;800&family=Caveat:wght@700&display=swap');
 
 @theme {
-  --color-brand-primary: #10b981; /* Emerald 500 - Trust/Growth */
-  --color-brand-secondary: #059669; /* Emerald 600 */
-  --color-brand-accent: #f59e0b; /* Amber 500 - Attention/Gamification */
+  --color-brand-primary: #10b981;
+  --color-brand-secondary: #059669;
+  --color-brand-accent: #f43f5e; /* Rose 500 for a pop / street art vibe */
+  --color-brand-yellow: #fbbf24;
   
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Syne", sans-serif;
+  --font-accent: "Caveat", cursive;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
 @layer base {
+  html, body {
+    @apply h-full overflow-hidden; /* Disable overscroll */
+    overscroll-behavior: none;
+  }
+
   body {
-    @apply bg-slate-50 text-slate-900 antialiased select-none;
+    @apply bg-slate-50 text-slate-900 antialiased transition-colors duration-300;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Dark mode classes */
+  .dark body {
+    @apply bg-slate-950 text-slate-50;
   }
 }
 
 @layer components {
-  .card {
-    @apply bg-white rounded-2xl shadow-sm border border-slate-100 p-4;
+  .card-street {
+    @apply bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800 p-5 transition-colors;
+    @apply border-b-4 border-r-4 border-slate-900 dark:border-slate-700 active:translate-x-1 active:translate-y-1 active:border-b-0 active:border-r-0 transition-all;
   }
-  
+
   .btn-primary {
-    @apply bg-brand-primary text-white font-semibold py-3 px-6 rounded-xl active:scale-95 transition-transform flex items-center justify-center gap-2;
+    @apply bg-brand-primary text-white font-black py-4 px-6 rounded-2xl active:scale-95 transition-transform flex items-center justify-center gap-2 shadow-lg shadow-emerald-200 dark:shadow-none select-none;
   }
   
+  .btn-street {
+    @apply bg-brand-accent text-white font-black py-4 px-6 rounded-2xl active:scale-95 transition-transform flex items-center justify-center gap-2 shadow-lg shadow-rose-200 dark:shadow-none border-2 border-slate-900 select-none font-display uppercase italic;
+  }
+
   .btn-secondary {
-    @apply bg-slate-100 text-slate-700 font-semibold py-3 px-6 rounded-xl active:scale-95 transition-transform flex items-center justify-center gap-2;
+    @apply bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold py-4 px-6 rounded-2xl active:scale-95 transition-transform flex items-center justify-center gap-2 select-none;
   }
 
   .input-field {
-    @apply w-full bg-slate-100 border-none rounded-xl py-3 px-4 focus:ring-2 focus:ring-brand-primary outline-none transition-all;
+    @apply w-full bg-slate-100 dark:bg-slate-800 border-2 border-transparent rounded-2xl py-4 px-5 focus:border-brand-primary dark:focus:border-brand-primary outline-none transition-all dark:text-white placeholder:text-slate-400 font-medium;
+  }
+
+  .bottom-nav-item {
+    @apply flex flex-col items-center gap-1 transition-all select-none pb-[env(safe-area-inset-bottom)];
   }
 }
 
 /* Hide scrollbar for clean mobile look */
 ::-webkit-scrollbar {
   display: none;
+}
+
+.font-street {
+  font-family: var(--font-display);
+}
+
+.font-accent {
+  font-family: var(--font-accent);
 }
