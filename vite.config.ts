@@ -7,6 +7,26 @@ export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
     plugins: [react(), tailwindcss()],
+    build: {
+      sourcemap: false,
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+        },
+        mangle: true,
+      },
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom', 'framer-motion'],
+            firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore'],
+            ui: ['lucide-react', 'leaflet', 'react-leaflet']
+          }
+        }
+      }
+    },
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },

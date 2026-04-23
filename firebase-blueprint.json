@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "post": {
+      "title": "Community Post",
+      "description": "A post in the forum/adda",
+      "type": "object",
+      "properties": {
+        "authorId": { "type": "string" },
+        "authorName": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "likes": { "type": "number" },
+        "whatsapp": { "type": "string" }
+      },
+      "required": ["authorId", "authorName", "content", "createdAt"]
+    },
+    "profile": {
+      "title": "User Profile",
+      "description": "Public profile and shop details for the map",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "bio": { "type": "string" },
+        "whatsapp": { "type": "string" },
+        "shopName": { "type": "string" },
+        "shopType": { "type": "string" },
+        "isEnlisted": { "type": "boolean" },
+        "lastActive": { "type": "string", "format": "date-time" },
+        "deviceInfo": {
+          "type": "object",
+          "properties": {
+            "platform": { "type": "string" },
+            "isLowEnd": { "type": "boolean" }
+          }
+        },
+        "location": {
+          "type": "object",
+          "properties": {
+            "lat": { "type": "number" },
+            "lng": { "type": "number" }
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "posts/{postId}": {
+      "schema": "post",
+      "description": "Collection of forum posts"
+    },
+    "users/{userId}": {
+      "schema": "profile",
+      "description": "User profile data"
+    },
+    "interactions/{interactionId}": {
+      "schema": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string" },
+          "targetId": { "type": "string" },
+          "type": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" }
+        }
+      },
+      "description": "Behavioral signaling data for marketing intelligence"
+    }
+  }
+}

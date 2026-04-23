@@ -2,10 +2,12 @@ import React from 'react';
 import { Trophy, Award, Zap, TrendingUp, Star } from 'lucide-react';
 import { PageWrapper } from '../components/PageWrapper';
 import { useLendenData } from '../hooks/useLendenData';
+import { useLanguage } from '../contexts/LanguageContext';
 import { motion } from 'framer-motion';
 
 const Rewards = () => {
   const { stats, isLoading } = useLendenData();
+  const { t } = useLanguage();
 
   if (isLoading) return null;
 
@@ -17,7 +19,7 @@ const Rewards = () => {
             <Trophy size={160} />
           </div>
           <div className="relative z-10">
-            <h2 className="text-3xl font-black font-display italic uppercase tracking-tighter mb-1 drop-shadow-[2px_2px_0px_rgba(255,255,255,1)]">জিতন (REWARDS)</h2>
+            <h2 className="text-3xl font-black font-display italic uppercase tracking-tighter mb-1 drop-shadow-[2px_2px_0px_rgba(255,255,255,1)]">{t.rewards_title}</h2>
             <p className="text-slate-900/60 text-[10px] font-black uppercase tracking-widest italic tracking-tight">আপনার ব্যবসা কতটুকু আগাইছে ক্যান?</p>
             
             <div className="mt-8 flex items-baseline gap-2">
@@ -34,7 +36,7 @@ const Rewards = () => {
 
         <div className="space-y-4">
           <div className="px-2">
-            <h3 className="text-lg font-black font-display italic uppercase tracking-tighter leading-none">আপনার পদক (BADGES)</h3>
+            <h3 className="text-lg font-black font-display italic uppercase tracking-tighter leading-none">{t.badges_title} (BADGES)</h3>
           </div>
           <div className="grid grid-cols-3 gap-4">
             {stats?.badges.map((badge, idx) => (
@@ -49,7 +51,7 @@ const Rewards = () => {
                 <div className="w-14 h-14 rounded-full bg-slate-900 flex items-center justify-center text-brand-yellow shadow-[4px_4px_0px_rgba(251,191,36,1)] border-2 border-slate-900">
                   <Award size={28} />
                 </div>
-                <span className="text-[9px] font-black leading-tight uppercase font-display italic tracking-tight dark:text-white">{badge}</span>
+                <span className="text-[9px] font-black leading-tight uppercase font-display italic tracking-tight dark:text-white font-mono">{badge}</span>
               </motion.div>
             ))}
             {stats?.badges.length === 0 && (
@@ -62,7 +64,7 @@ const Rewards = () => {
 
         <div className="space-y-4 pt-2">
           <div className="px-2">
-            <h3 className="text-lg font-black font-display italic uppercase tracking-tighter leading-none">সুবিধা আনলক (PERKS)</h3>
+            <h3 className="text-lg font-black font-display italic uppercase tracking-tighter leading-none">{t.perks_title} (PERKS)</h3>
           </div>
           <div className="space-y-3">
             {[

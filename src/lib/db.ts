@@ -1,20 +1,39 @@
 import { openDB, type IDBPDatabase } from 'idb';
+import * as Y from 'yjs';
+import { IndexeddbPersistence } from 'y-indexeddb';
 import { Customer, Transaction, UserStats } from '../types';
+import { encrypt, decrypt } from './crypto';
 
-const DB_NAME = 'lenden_db';
-const DB_VERSION = 1;
+const DB_NAME = 'lenden_engine_v3';
+const DB_VERSION = 3;
+
+// Initialize the CRDT shared document for real-time mesh sync
+export const ydoc = new Y.Doc();
+const persistence = new IndexeddbPersistence('lenden-mesh-storage', ydoc);
+const yCustomers = ydoc.getMap<any>('customers');
+const yTransactions = ydoc.getArray<any>('transactions');
 
 export async function initDB() {
   return openDB(DB_NAME, DB_VERSION, {
-    upgrade(db) {
+    upgrade(db, oldVersion, newVersion, transaction) {
       if (!db.objectStoreNames.contains('customers')) {
         db.createObjectStore('customers', { keyPath: 'id' });
       }
+      
       if (!db.objectStoreNames.contains('transactions')) {
         const txStore = db.createObjectStore('transactions', { keyPath: 'id' });
         txStore.createIndex('by-customer', 'customerId');
         txStore.createIndex('by-timestamp', 'timestamp');
+      } else if (oldVersion < 2) {
+        const txStore = transaction.objectStore('transactions');
+        if (!txStore.indexNames.contains('by-customer')) {
+          txStore.createIndex('by-customer', 'customerId');
+        }
+        if (!txStore.indexNames.contains('by-timestamp')) {
+          txStore.createIndex('by-timestamp', 'timestamp');
+        }
       }
+
       if (!db.objectStoreNames.contains('stats')) {
         db.createObjectStore('stats', { keyPath: 'id' });
       }
@@ -29,14 +48,56 @@ function getDB() {
   return dbPromise;
 }
 
-export async function saveCustomer(customer: Customer) {
-  const db = await getDB();
-  await db.put('customers', customer);
+/**
+ * Encrypts sensitive fields if a PIN is provided.
+ */
+async function processCustomerForStorage(customer: Customer, pin?: string | null): Promise<Customer> {
+  if (!pin) return customer;
+  
+  const encryptedCustomer = { ...customer };
+  if (customer.nid) {
+    encryptedCustomer.nid = await encrypt(customer.nid, pin);
+  }
+  if (customer.bkashNumber) {
+    encryptedCustomer.bkashNumber = await encrypt(customer.bkashNumber, pin);
+  }
+  return encryptedCustomer;
 }
 
-export async function getCustomers() {
+/**
+ * Decrypts sensitive fields if a PIN is provided.
+ */
+async function processCustomerFromStorage(customer: Customer, pin?: string | null): Promise<Customer> {
+  if (!pin) return customer;
+
+  const decryptedCustomer = { ...customer };
+  if (customer.nid && customer.nid.length > 20) { // Simple check if it looks encrypted (base64)
+    try {
+      decryptedCustomer.nid = await decrypt(customer.nid, pin);
+    } catch (e) {
+      console.warn('Failed to decrypt NID', e);
+    }
+  }
+  if (customer.bkashNumber && customer.bkashNumber.length > 20) {
+    try {
+      decryptedCustomer.bkashNumber = await decrypt(customer.bkashNumber, pin);
+    } catch (e) {
+      console.warn('Failed to decrypt bKash', e);
+    }
+  }
+  return decryptedCustomer;
+}
+
+export async function saveCustomer(customer: Customer, pin?: string | null) {
   const db = await getDB();
-  return db.getAll('customers') as Promise<Customer[]>;
+  const processed = await processCustomerForStorage(customer, pin);
+  await db.put('customers', processed);
+}
+
+export async function getCustomers(pin?: string | null) {
+  const db = await getDB();
+  const rawCustomers = await db.getAll('customers') as Customer[];
+  return Promise.all(rawCustomers.map(c => processCustomerFromStorage(c, pin)));
 }
 
 export async function saveTransaction(tx: Transaction) {
@@ -47,6 +108,11 @@ export async function saveTransaction(tx: Transaction) {
 export async function getTransactionsByCustomer(customerId: string) {
   const db = await getDB();
   return db.getAllFromIndex('transactions', 'by-customer', customerId) as Promise<Transaction[]>;
+}
+
+export async function getTransactions() {
+  const db = await getDB();
+  return db.getAll('transactions') as Promise<Transaction[]>;
 }
 
 export async function getStats() {

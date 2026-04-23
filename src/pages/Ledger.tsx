@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, PlusCircle, Phone, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { Search, PlusCircle, Phone } from 'lucide-react';
 import { formatCurrency, cn } from '../lib/utils';
 import { PageWrapper } from '../components/PageWrapper';
 import { useLendenData } from '../hooks/useLendenData';
+import { useLanguage } from '../contexts/LanguageContext';
 import { motion } from 'framer-motion';
 
 const Ledger = () => {
   const { customers, isLoading } = useLendenData();
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
@@ -27,7 +29,7 @@ const Ledger = () => {
             <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-primary" size={20} />
             <input 
               type="text" 
-              placeholder="কাস্টমার খুঁজুন (Search)..." 
+              placeholder="খুঁজুন (Search)..." 
               className="input-field pl-14 border-2 border-slate-900"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -41,7 +43,7 @@ const Ledger = () => {
             className="w-full btn-street mb-2"
           >
             <PlusCircle size={24} />
-            নতুন কুস্তাশ যোগ করেন (Add Customer)
+            {t.add_customer} (Add Customer)
           </button>
 
           <div className="space-y-3">
@@ -69,7 +71,7 @@ const Ledger = () => {
                     {formatCurrency(Math.abs(customer.totalBalance))}
                   </div>
                   <div className="text-[8px] font-black uppercase tracking-tighter text-slate-400 mt-1 italic">
-                    {customer.totalBalance >= 0 ? "পাবো (Pabo)" : "দেব (Debo)"}
+                    {customer.totalBalance >= 0 ? "পাবো" : "দেব"}
                   </div>
                 </div>
               </motion.div>

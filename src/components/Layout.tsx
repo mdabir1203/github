@@ -1,12 +1,16 @@
 import React, { useEffect } from 'react';
-import { Award } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Award, Lock, Settings } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import { useSecurity } from '../contexts/SecurityContext';
 import Navigation from './Navigation';
 import PullToRefresh from './PullToRefresh';
 import { motion } from 'framer-motion';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+  const navigate = useNavigate();
   const { deleteAccount } = useAuth();
+  const { lock, hasPinSet, isLocked } = useSecurity();
   
   const handleRefresh = async () => {
     // In a real app this might fetch from a server, 
@@ -52,6 +56,22 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 VERIFIED
               </span>
             </div>
+            {hasPinSet && !isLocked && (
+              <button 
+                onClick={() => navigate('/language')}
+                className="w-10 h-10 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-900 flex items-center justify-center text-slate-600 dark:text-slate-400 shadow-[3px_3px_0px_rgba(0,0,0,1)] active:scale-90 transition-all ml-1"
+              >
+                <Settings size={18} />
+              </button>
+            )}
+            {hasPinSet && (
+              <button 
+                onClick={lock}
+                className="w-10 h-10 rounded-2xl bg-slate-900 border-2 border-slate-700 flex items-center justify-center text-rose-500 shadow-[3px_3px_0px_rgba(244,63,94,0.3)] active:scale-90 transition-all ml-1"
+              >
+                <Lock size={18} />
+              </button>
+            )}
           </div>
         </div>
       </header>

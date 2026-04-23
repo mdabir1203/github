@@ -17,6 +17,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const tx = db.transaction(stores, 'readwrite');
       await Promise.all(stores.map(store => tx.objectStore(store).clear()));
       await tx.done;
+      
+      // Clear security PIN and onboarding
+      localStorage.removeItem('lenden_pin_hash');
+      localStorage.removeItem('lenden_welcome_seen');
+      
       window.location.reload();
     }
   };

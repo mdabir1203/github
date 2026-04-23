@@ -69,3 +69,40 @@
 .font-accent {
   font-family: var(--font-accent);
 }
+
+/* 3D Map Effects & Android Optimizations */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.shop-label-glass {
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(4px);
+  border: 2px solid #0f172a !important;
+  border-radius: 4px !important;
+  box-shadow: 2px 2px 0px rgba(0,0,0,1) !important;
+  padding: 0 !important;
+}
+
+.shop-label-glass::before {
+  display: none !important;
+}
+
+/* Optimization for low-end Android scroll/touch performance */
+* {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.animate-pulse-slow {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(0.95); }
+}

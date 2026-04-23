@@ -1,0 +1,53 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidPost(data) {
+      return data.authorId is string && 
+             data.authorId.size() <= 128 &&
+             data.content is string && 
+             data.content.size() <= 1000 &&
+             data.authorName is string &&
+             data.authorName.size() <= 50 &&
+             (!('whatsapp' in data) || (data.whatsapp is string && data.whatsapp.size() <= 20));
+    }
+
+    function isValidProfile(data) {
+      return (!('shopName' in data) || (data.shopName is string && data.shopName.size() <= 100)) &&
+             (!('shopType' in data) || (data.shopType is string && data.shopType.size() <= 50)) &&
+             (!('whatsapp' in data) || (data.whatsapp is string && data.whatsapp.size() <= 20)) &&
+             (!('isEnlisted' in data) || (data.isEnlisted is bool)) &&
+             (!('location' in data) || (data.location is map && data.location.lat is number && data.location.lng is number));
+    }
+
+    match /posts/{postId} {
+      allow read: if true; // Publicly readable forum
+      allow create: if isSignedIn() && 
+                      request.resource.data.authorId == request.auth.uid &&
+                      isValidPost(request.resource.data);
+      allow update, delete: if isOwner(resource.data.authorId);
+    }
+
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if isOwner(userId) && isValidProfile(request.resource.data);
+    }
+
+    match /interactions/{interactionId} {
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read, update, delete: if false; // Private intelligence
+    }
+  }
+}

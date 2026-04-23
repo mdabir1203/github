@@ -5,11 +5,16 @@ import {
   Users, 
   PlusCircle, 
   Trophy, 
-  History 
+  History,
+  MessageSquare,
+  Map as MapIcon 
 } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Navigation = () => {
+  const { t } = useLanguage();
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 px-6 py-3 flex justify-between items-center z-50 transition-colors">
       <NavLink 
@@ -20,7 +25,7 @@ const Navigation = () => {
         )}
       >
         <LayoutDashboard size={22} className="transition-transform active:scale-125" />
-        <span className="text-[10px] font-black uppercase tracking-tighter font-display italic">ঘর</span>
+        <span className="text-[10px] font-black uppercase tracking-tighter font-display italic">{t.nav_home}</span>
       </NavLink>
 
       <NavLink 
@@ -31,7 +36,7 @@ const Navigation = () => {
         )}
       >
         <Users size={22} className="transition-transform active:scale-125" />
-        <span className="text-[10px] font-black uppercase tracking-tighter font-display italic">খাতা</span>
+        <span className="text-[10px] font-black uppercase tracking-tighter font-display italic">{t.nav_ledger}</span>
       </NavLink>
 
       <NavLink 
@@ -42,14 +47,25 @@ const Navigation = () => {
       </NavLink>
 
       <NavLink 
-        to="/beliefs" 
+        to="/adda" 
         className={({ isActive }) => cn(
           "bottom-nav-item",
           isActive ? "text-brand-primary" : "text-slate-400 dark:text-slate-500"
         )}
       >
-        <Trophy size={22} className="transition-transform active:scale-125" />
-        <span className="text-[10px] font-black uppercase tracking-tighter font-display italic">জিতন</span>
+        <MessageSquare size={22} className="transition-transform active:scale-125" />
+        <span className="text-[10px] font-black uppercase tracking-tighter font-display italic">{t.nav_adda}</span>
+      </NavLink>
+
+      <NavLink 
+        to="/map" 
+        className={({ isActive }) => cn(
+          "bottom-nav-item",
+          isActive ? "text-brand-primary" : "text-slate-400 dark:text-slate-500"
+        )}
+      >
+        <MapIcon size={22} className="transition-transform active:scale-125" />
+        <span className="text-[10px] font-black uppercase tracking-tighter font-display italic">{t.nav_map}</span>
       </NavLink>
 
       <NavLink 
@@ -60,7 +76,7 @@ const Navigation = () => {
         )}
       >
         <History size={22} className="transition-transform active:scale-125" />
-        <span className="text-[10px] font-black uppercase tracking-tighter font-display italic">কিচ্ছা</span>
+        <span className="text-[10px] font-black uppercase tracking-tighter font-display italic">{t.nav_history}</span>
       </NavLink>
     </nav>
   );
