@@ -115,6 +115,26 @@ export async function getTransactions() {
   return db.getAll('transactions') as Promise<Transaction[]>;
 }
 
+export async function deleteTransactions(ids: string[]) {
+  const db = await getDB();
+  const tx = db.transaction(['transactions', 'customers', 'stats'], 'readwrite');
+  
+  for (const id of ids) {
+    const transaction = await tx.objectStore('transactions').get(id) as Transaction;
+    if (transaction) {
+      // Revert balance change
+      const customer = await tx.objectStore('customers').get(transaction.customerId) as Customer;
+      if (customer) {
+        const amountChange = transaction.type === 'CREDIT' ? -transaction.amount : transaction.amount;
+        customer.totalBalance += amountChange;
+        await tx.objectStore('customers').put(customer);
+      }
+      await tx.objectStore('transactions').delete(id);
+    }
+  }
+  await tx.done;
+}
+
 export async function getStats() {
   const db = await getDB();
   const stats = await db.get('stats', 'current');

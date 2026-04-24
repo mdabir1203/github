@@ -1,20 +1,90 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 💳 Lenden (লেনদেন) - Financial Intelligence for Local Merchants
 
-# Run and deploy your AI Studio app
+Lenden is a local-first, privacy-focused financial ledger designed specifically for small business owners and high-volume merchants. It combines regional dialect personalization with industrial-grade security and advanced data governance.
 
-This contains everything you need to run your app locally.
+## 🚀 Key Features
 
-View your app in AI Studio: https://ai.studio/apps/169015a4-672b-47bd-9c77-94a4fde39e47
+- **Multi-Dialect Personalization**: Support for Chittagonian, Sylheti, Dhakaiyya, Barishailla, and Banglish.
+- **Secure by Default**: Exponential backoff PIN lockout and hardware-backed AES-GCM-256 encryption.
+- **Data Sovereignty**: Local-first architecture using IndexedDB and CRDT mesh networking.
+- **Intelligence Hub**: AI-driven cash flow insights and recovery velocity metrics (CoreML Principles).
+- **Compliance Center**: Formal alignment with ISO 27001, SOC 2 Type II, and GDPR (Right to Access/Erasure).
 
-## Run Locally
+---
 
-**Prerequisites:**  Node.js
+## 🛠️ Local Installation
 
+### Prerequisites
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- [Node.js](https://nodejs.org/) (v20 or higher)
+- [npm](https://www.npmjs.com/) (installed with Node.js)
+
+### Setup Steps
+
+1. **Clone the repository** (or download source):
+   ```bash
+   git clone <repository-url>
+   cd lenden
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Configure Environment**:
+   Create a `.env` file in the root directory (refer to `.env.example`):
+   ```env
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
+
+4. **Run Development Server**:
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) to see the app.
+
+---
+
+## 🐳 Running with Docker
+
+The easiest way to run a production-ready audit of Lenden is via Docker.
+
+### Using Docker Compose (Recommended)
+
+1. **Start the application**:
+   ```bash
+   GEMINI_API_KEY=your_key_here docker-compose up --build -d
+   ```
+
+2. **Access the app**:
+   Lenden will be running at [http://localhost:3000](http://localhost:3000).
+
+### Using Docker Directly
+
+```bash
+# Build the image
+docker build -t lenden-app --build-arg GEMINI_API_KEY=your_key_here .
+
+# Run the container
+docker run -p 3000:3000 lenden-app
+```
+
+---
+
+## 🛡️ Auditing & Compliance
+
+Detailed compliance specifications can be found in the following documents:
+
+- [SYSTEM_ARCH.md](./SYSTEM_ARCH.md) - Technical architecture and TWA packaging.
+- [HACKER_AUDIT.md](./HACKER_AUDIT.md) - Security audit and vulnerability mitigation log.
+- [COMPLIANCE.md](./COMPLIANCE.md) - Formal GRC framework (ISO/SOC2/GDPR).
+
+### Accessing the Trust Center
+Once logged in, navigate to **Settings > Security & Compliance** to audit your data portability and erasure rights.
+
+---
+
+## 🏛️ License
+
+Proprietary. Built for secure local financial management.

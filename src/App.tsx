@@ -20,6 +20,7 @@ const AddTransaction = React.lazy(() => import('./pages/AddTransaction'));
 const AddCustomer = React.lazy(() => import('./pages/AddCustomer'));
 const CustomerDetail = React.lazy(() => import('./pages/CustomerDetail'));
 const LanguageSettings = React.lazy(() => import('./pages/LanguageSettings').then(m => ({ default: m.LanguageSettings })));
+const Governance = React.lazy(() => import('./pages/Governance').then(m => ({ default: m.Governance })));
 
 import { useLendenData } from './hooks/useLendenData';
 import { useSecurity } from './contexts/SecurityContext';
@@ -70,6 +71,7 @@ export default function App() {
             <Route path="/add-customer" element={<ProtectedRoute><AddCustomer /></ProtectedRoute>} />
             <Route path="/patterns/:id" element={<ProtectedRoute><CustomerDetail /></ProtectedRoute>} />
             <Route path="/language" element={<ProtectedRoute><LanguageSettings /></ProtectedRoute>} />
+            <Route path="/governance" element={<ProtectedRoute><Governance /></ProtectedRoute>} />
             <Route path="/adda" element={<ProtectedRoute><Adda /></ProtectedRoute>} />
             <Route path="/map" element={<ProtectedRoute><ShopMap /></ProtectedRoute>} />
             

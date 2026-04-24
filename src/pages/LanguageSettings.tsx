@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, Languages, Check } from 'lucide-react';
+import { ChevronRight, Languages, Check, ShieldCheck, Lock } from 'lucide-react';
 import { PageWrapper } from '../components/PageWrapper';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Dialect } from '../lib/i18n';
@@ -62,6 +62,26 @@ export const LanguageSettings = () => {
               )}
             </motion.button>
           ))}
+
+          <div className="pt-4">
+            <h3 className="px-2 text-[10px] font-black uppercase italic tracking-widest text-slate-400 mb-2">Audit & GRC</h3>
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/governance')}
+              className="w-full card-street p-5 flex items-center justify-between border-2 border-slate-900 bg-slate-900 text-white"
+            >
+              <div className="flex items-center gap-4 text-left">
+                <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center border-2 border-slate-700 text-brand-primary">
+                  <ShieldCheck size={20} />
+                </div>
+                <div>
+                  <div className="font-black font-display text-lg tracking-tight leading-none uppercase italic">Security & Compliance</div>
+                  <div className="text-[10px] font-bold text-slate-500 uppercase italic mt-1">ISO 27001 / SOC 2 / GDPR</div>
+                </div>
+              </div>
+              <ChevronRight size={16} className="text-slate-500" />
+            </motion.button>
+          </div>
         </div>
 
         <div className="p-6 card-street border-dashed bg-brand-yellow/5 border-2 text-center space-y-2">

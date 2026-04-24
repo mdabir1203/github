@@ -1,6 +1,8 @@
-# 🥷 Ninja Russian Hacker Codebase Audit (2026)
+# 🔒 Lenden Security Audit (GRC Phase I)
 
-Status: **HARDENED** | Target: **Lenden v3.1**
+Status: **HARDENED** | Target: **Lenden v3.2** | Compliance: **ISO 27001 / SOC 2 / GDPR**
+
+> This document forms the technical basis for the **Lenden Compliance Framework**. See `COMPLIANCE.md` for full governance details.
 
 ## 1. Brute-Force Vector (MITIGATED)
 - **Vulnerability**: Previous versions allowed infinite PIN attempts. An automated script could crack a 4-digit PIN in < 5 minutes.
