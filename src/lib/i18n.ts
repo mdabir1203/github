@@ -27,6 +27,11 @@ export interface Translations {
   feedback_video: string;
   feedback_text: string;
   feedback_submit: string;
+  invite_title: string;
+  invite_cta: string;
+  invite_desc: string;
+  invite_copy: string;
+  invite_share: string;
 }
 
 export const DIALECT_DATA: Record<Dialect, Translations> = {
@@ -56,7 +61,12 @@ export const DIALECT_DATA: Record<Dialect, Translations> = {
     feedback_voice: "মুখে বলুন",
     feedback_video: "ভিডিও বার্তা",
     feedback_text: "লিখে জানান",
-    feedback_submit: "পাঠিয়ে দিন বস"
+    feedback_submit: "পাঠিয়ে দিন বস",
+    invite_title: "বন্ধুদের আনুন",
+    invite_cta: "শেয়ার করুন ও জিতুন",
+    invite_desc: "আপনার বন্ধুকে লেনদেন অ্যাপ ব্যবহার করতে বলুন এবং বিশ্বাস স্কোর বাড়ান!",
+    invite_copy: "লিঙ্ক কপি করুন",
+    invite_share: "এখনই পাঠান"
   },
   CHITTAGONIAN: {
     welcome: "লেনদেনত আইয়ুন্",
@@ -84,7 +94,12 @@ export const DIALECT_DATA: Record<Dialect, Translations> = {
     feedback_voice: "রবে কইন (Voice)",
     feedback_video: "ভিডিওত দেখান",
     feedback_text: "লেখি দুন",
-    feedback_submit: "মারি দুন (Submit)"
+    feedback_submit: "মারি দুন (Submit)",
+    invite_title: "বন্ধুরে ডাকুন",
+    invite_cta: "শেয়ার গরি ইনাম পান",
+    invite_desc: "অন্নের বন্ধুরে লেন্দেন অ্যাপ চালাইত কউন আর ট্রাস্ট স্কোর বাড়াউন!",
+    invite_copy: "লিঙ্ক কপি গত্তুন",
+    invite_share: "এহনই মারুন"
   },
   SYLHETI: {
     welcome: "লেনদেনো খুশ আমদেদ",
@@ -112,7 +127,12 @@ export const DIALECT_DATA: Record<Dialect, Translations> = {
     feedback_voice: "মাতিয়া কও (Voice)",
     feedback_video: "ভিডিও দেখাও",
     feedback_text: "লেখো",
-    feedback_submit: "পাঠাও"
+    feedback_submit: "পাঠাও",
+    invite_title: "বন্ধুরে মাতিও",
+    invite_cta: "শেয়ার করো ও জিতো",
+    invite_desc: "আপনার দোস্তরে কইয়া লেনদেন অ্যাপ দেও আর একিনর স্কোর বাড়াও!",
+    invite_copy: "লিঙ্ক কপি করো",
+    invite_share: "অখনি পাঠাও"
   },
   BARISHAILLA: {
     welcome: "লেনদেনে আইছেন মোরা",
@@ -123,7 +143,7 @@ export const DIALECT_DATA: Record<Dialect, Translations> = {
     history: "আগের খবর",
     send_sms: "এসএমএস হত্তন",
     trust_score: "বিচ্ছাসের মান",
-    lock_title: "লোহার সিন্দুক",
+    lock_title: "লোহার সیندুক",
     save: "থুয়ে দেন",
     next: "আগাই যান",
     unlock: "খুইল্লা ফালান",
@@ -140,7 +160,12 @@ export const DIALECT_DATA: Record<Dialect, Translations> = {
     feedback_voice: "মুখে কন (Voice)",
     feedback_video: "মুহ দেহান (Video)",
     feedback_text: "লেখেন দেহি",
-    feedback_submit: "পাঠান দেহি"
+    feedback_submit: "পাঠান দেহি",
+    invite_title: "দোস্তরে কন",
+    invite_cta: "শেয়ার হরে ইনাম লন",
+    invite_desc: "আপনের দোস্তরে লেনদেন অ্যাপ চালাইতে দেহান আর বিচ্ছাসের মান বাড়ান!",
+    invite_copy: "লিঙ্ক কপি হত্তন",
+    invite_share: "জুত হরে পাঠাই দেন"
   },
   DHAKAIYYA: {
     welcome: "লেনদেন মে আপকা সোয়াগত হ্যায়",
@@ -168,7 +193,12 @@ export const DIALECT_DATA: Record<Dialect, Translations> = {
     feedback_voice: "বুলি মারেন (Voice)",
     feedback_video: "ভিডিও বার্তা",
     feedback_text: "লেখেন দেখি",
-    feedback_submit: "কাম সারেন"
+    feedback_submit: "কাম সারেন",
+    invite_title: "দোস্তরে ডাক",
+    invite_cta: "শেয়ার মার ও ইনাম ধর",
+    invite_desc: "তোর দোস্তরে লেনদেন অ্যাপে ঢুকা আর ট্রাস্ট লেভেল টাইনা তোল!",
+    invite_copy: "লিঙ্ক কপি কর",
+    invite_share: "এখনই সেন্ড দে"
   },
   BANGLISH: {
     welcome: "Welcome to Lenden",
@@ -196,6 +226,11 @@ export const DIALECT_DATA: Record<Dialect, Translations> = {
     feedback_voice: "Voice Support",
     feedback_video: "Video Support",
     feedback_text: "Write to us",
-    feedback_submit: "Send Ticket"
+    feedback_submit: "Send Ticket",
+    invite_title: "Invite Friends",
+    invite_cta: "Share & Earn",
+    invite_desc: "Invite your merchant friends to use Lenden and boost your trust score!",
+    invite_copy: "Copy Link",
+    invite_share: "Share Now"
   }
 };

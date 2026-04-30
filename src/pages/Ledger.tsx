@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, PlusCircle, Phone } from 'lucide-react';
+import { Search, PlusCircle, Phone, Gift } from 'lucide-react';
 import { formatCurrency, cn } from '../lib/utils';
 import { PageWrapper } from '../components/PageWrapper';
 import { useLendenData } from '../hooks/useLendenData';
@@ -76,6 +76,17 @@ const Ledger = () => {
                 </div>
               </motion.div>
             ))}
+
+            {filteredCustomers.length > 0 && (
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate('/invite')}
+                className="w-full card-street bg-white dark:bg-slate-900 p-4 border-dashed border-2 border-brand-primary/50 text-brand-primary flex items-center justify-center gap-2 mt-4"
+              >
+                <Gift size={20} />
+                <span className="text-xs font-black uppercase italic tracking-widest">{t.invite_cta}</span>
+              </motion.button>
+            )}
           </div>
         </div>
       </div>

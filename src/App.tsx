@@ -22,6 +22,8 @@ const CustomerDetail = React.lazy(() => import('./pages/CustomerDetail'));
 const LanguageSettings = React.lazy(() => import('./pages/LanguageSettings').then(m => ({ default: m.LanguageSettings })));
 const Governance = React.lazy(() => import('./pages/Governance').then(m => ({ default: m.Governance })));
 const ReviewAdda = React.lazy(() => import('./pages/ReviewAdda').then(m => ({ default: m.ReviewAdda })));
+const Invite = React.lazy(() => import('./pages/Invite').then(m => ({ default: m.Invite })));
+const Join = React.lazy(() => import('./pages/Join').then(m => ({ default: m.Join })));
 
 import { useLendenData } from './hooks/useLendenData';
 import { useSecurity } from './contexts/SecurityContext';
@@ -59,6 +61,9 @@ export default function App() {
       <React.Suspense fallback={<div className="flex-1 bg-slate-950" />}>
         <AnimatePresence mode="wait">
           <Routes location={location}>
+            {/* Public Routes */}
+            <Route path="/join" element={<Join />} />
+
             {/* Lock Screen Route */}
             <Route path="/lock" element={<LockScreen />} />
             
@@ -74,6 +79,7 @@ export default function App() {
             <Route path="/language" element={<ProtectedRoute><LanguageSettings /></ProtectedRoute>} />
             <Route path="/governance" element={<ProtectedRoute><Governance /></ProtectedRoute>} />
             <Route path="/review-adda" element={<ProtectedRoute><ReviewAdda /></ProtectedRoute>} />
+            <Route path="/invite" element={<ProtectedRoute><Invite /></ProtectedRoute>} />
             <Route path="/adda" element={<ProtectedRoute><Adda /></ProtectedRoute>} />
             <Route path="/map" element={<ProtectedRoute><ShopMap /></ProtectedRoute>} />
             

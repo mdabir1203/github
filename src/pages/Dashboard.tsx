@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowUpRight, ArrowDownLeft, Zap, TrendingUp, Award, LifeBuoy, ChevronRight } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, Zap, TrendingUp, Award, LifeBuoy, ChevronRight, Gift } from 'lucide-react';
 import { formatCurrency, formatDate, cn } from '../lib/utils';
 import { PageWrapper } from '../components/PageWrapper';
 import { useLendenData } from '../hooks/useLendenData';
@@ -101,6 +101,26 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+        </motion.div>
+
+        {/* Invite & Earn Card */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          onClick={() => navigate('/invite')}
+          className="card-street bg-brand-primary p-5 flex items-center justify-between cursor-pointer border-2 border-slate-900 shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_rgba(0,0,0,1)] transition-all"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-rose-500 border-2 border-slate-900 shadow-[2px_2px_0px_rgba(0,0,0,1)]">
+              <Gift size={24} />
+            </div>
+            <div>
+              <div className="font-black font-display text-lg tracking-tight leading-none uppercase italic">{t.invite_cta}</div>
+              <div className="text-[10px] font-bold text-slate-700 uppercase italic mt-1">Boost trust score by referring friends!</div>
+            </div>
+          </div>
+          <ChevronRight size={20} className="text-slate-900" />
         </motion.div>
 
         <div className="grid grid-cols-2 gap-4">
