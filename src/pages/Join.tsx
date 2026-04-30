@@ -12,14 +12,22 @@ export const Join = () => {
   const [referrerName, setReferrerName] = useState<string>('');
 
   useEffect(() => {
-    const ref = searchParams.get('ref');
+    const ref = searchParams.get('ref') || searchParams.get('r');
     if (ref) {
-      // ref format is expected to be lenden-{safeName}-{hash}
-      const parts = ref.split('-');
-      if (parts.length >= 3 && parts[0].toLowerCase() === 'lenden') {
-        const namePart = parts[1];
+      let namePart = '';
+      if (ref.toLowerCase().startsWith('lenden-')) {
+        const parts = ref.split('-');
+        if (parts.length >= 3) {
+          namePart = parts[1];
+        }
+      } else {
+        // Short format: ABI123 -> Name: ABI
+        // Usually 6 characters, first 3 is name, last 3 is hash
+        namePart = ref.length > 3 ? ref.substring(0, ref.length - 3) : ref;
+      }
+      
+      if (namePart) {
         setReferrerName(namePart);
-        // Save the referral data for later activation
         localStorage.setItem('lenden_referred_by', ref);
       }
     }

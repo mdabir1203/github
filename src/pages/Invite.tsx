@@ -31,9 +31,10 @@ export const Invite = () => {
   }, [sharerName]);
 
   // Generate the formatted referral link
-  const safeName = sharerName.trim().toLowerCase().replace(/[^a-z0-9]/g, '') || 'user';
-  const referralCode = `lenden-${safeName}-${referralHash}`;
-  const referralLink = `${window.location.origin}/join?ref=${referralCode}`;
+  const safeName = sharerName.trim().toLowerCase().replace(/[^a-z0-9]/g, '').substring(0, 3);
+  const code = safeName ? `${safeName}${referralHash.substring(0, 3)}` : referralHash.substring(0, 6);
+  const referralCode = code.toUpperCase();
+  const referralLink = `${window.location.origin}/j?r=${referralCode}`;
 
   const handleShare = async () => {
     if (navigator.share) {

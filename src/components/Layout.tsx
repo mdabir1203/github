@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useSecurity } from '../contexts/SecurityContext';
 import Navigation from './Navigation';
 import PullToRefresh from './PullToRefresh';
+import { SyncStatus } from './SyncStatus';
 import { motion } from 'framer-motion';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -95,6 +96,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </footer>
       </main>
 
+      <SyncStatus />
       <Navigation />
     </div>
   );

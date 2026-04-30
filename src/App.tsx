@@ -63,6 +63,7 @@ export default function App() {
           <Routes location={location}>
             {/* Public Routes */}
             <Route path="/join" element={<Join />} />
+            <Route path="/j" element={<Join />} />
 
             {/* Lock Screen Route */}
             <Route path="/lock" element={<LockScreen />} />
