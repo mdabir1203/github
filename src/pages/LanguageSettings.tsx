@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, Languages, Check, ShieldCheck, Lock } from 'lucide-react';
+import { ChevronRight, Languages, Check, ShieldCheck, Lock, LifeBuoy } from 'lucide-react';
 import { PageWrapper } from '../components/PageWrapper';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Dialect } from '../lib/i18n';
@@ -17,7 +17,7 @@ const DIALECT_OPTIONS: { id: Dialect; name: string; region: string }[] = [
 
 export const LanguageSettings = () => {
   const navigate = useNavigate();
-  const { dialect, setDialect } = useLanguage();
+  const { dialect, setDialect, t } = useLanguage();
 
   return (
     <PageWrapper>
@@ -80,6 +80,26 @@ export const LanguageSettings = () => {
                 </div>
               </div>
               <ChevronRight size={16} className="text-slate-500" />
+            </motion.button>
+          </div>
+
+          <div className="pt-2">
+            <h3 className="px-2 text-[10px] font-black uppercase italic tracking-widest text-slate-400 mb-2">Help & Improvement</h3>
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate('/review-adda')}
+              className="w-full card-street p-5 flex items-center justify-between border-2 border-slate-900 bg-brand-primary text-slate-900 shadow-[4px_4px_0px_rgba(0,0,0,1)]"
+            >
+              <div className="flex items-center gap-4 text-left">
+                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center border-2 border-slate-900">
+                  <LifeBuoy size={20} />
+                </div>
+                <div>
+                  <div className="font-black font-display text-lg tracking-tight leading-none uppercase italic">{t.feedback_title}</div>
+                  <div className="text-[10px] font-bold text-slate-700 uppercase italic mt-1">Submit technical issues or UI feedback</div>
+                </div>
+              </div>
+              <ChevronRight size={16} className="text-slate-900" />
             </motion.button>
           </div>
         </div>

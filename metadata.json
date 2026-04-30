@@ -1,6 +1,6 @@
 {
   "name": "Lenden",
   "description": "Smart bookkeeping for small retailers with behavioral credit scoring and offline-first resilience.",
-  "requestFramePermissions": ["geolocation"],
+  "requestFramePermissions": ["geolocation", "camera", "microphone"],
   "majorCapabilities": []
 }

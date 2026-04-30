@@ -10,10 +10,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const History = () => {
   const { t } = useLanguage();
-  const { refresh } = useLendenData();
-  const [txs, setTxs] = useState<(Transaction & { customerName: string })[]>([]);
+  const { transactions, customers, isLoading, refresh } = useLendenData();
   const [search, setSearch] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
   
   // Filters
   const [typeFilter, setTypeFilter] = useState<'ALL' | TransactionType>('ALL');
@@ -24,26 +22,16 @@ const History = () => {
   // Selection
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  const loadData = async () => {
-    setIsLoading(true);
-    const db = await initDB();
-    const allTxs = await db.getAll('transactions') as Transaction[];
-    const customers = await db.getAll('customers') as Customer[];
+  const txsWithNames = useMemo(() => {
     const customerMap = new Map(customers.map(c => [c.id, c.name]));
-    
-    setTxs(allTxs.map(tx => ({
+    return transactions.map(tx => ({
       ...tx,
       customerName: customerMap.get(tx.customerId) || 'Unknown'
-    })).sort((a, b) => b.timestamp - a.timestamp));
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    loadData();
-  }, []);
+    }));
+  }, [transactions, customers]);
 
   const filteredTxs = useMemo(() => {
-    return txs.filter(tx => {
+    return txsWithNames.filter(tx => {
       // Search
       const matchesSearch = tx.customerName.toLowerCase().includes(search.toLowerCase()) ||
                            (tx.note && tx.note.toLowerCase().includes(search.toLowerCase()));
@@ -64,7 +52,7 @@ const History = () => {
 
       return matchesSearch && matchesType && matchesRange;
     });
-  }, [txs, search, typeFilter, startDate, endDate]);
+  }, [txsWithNames, search, typeFilter, startDate, endDate]);
 
   const toggleSelect = (id: string) => {
     const next = new Set(selectedIds);
@@ -77,12 +65,11 @@ const History = () => {
     if (!window.confirm(`${selectedIds.size}টি লেনদেন ডিলিট করতে চান?`)) return;
     await deleteTransactions(Array.from(selectedIds));
     setSelectedIds(new Set());
-    await loadData();
     await refresh();
   };
 
   const handleBulkExport = () => {
-    const selectedTxs = txs.filter(t => selectedIds.has(t.id));
+    const selectedTxs = txsWithNames.filter(t => selectedIds.has(t.id));
     const headers = ['Date', 'Customer', 'Type', 'Amount', 'Note'];
     const csvContent = [
       headers.join(','),

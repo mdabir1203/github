@@ -5,7 +5,7 @@ import { useLendenData } from '../hooks/useLendenData';
 import { useSecurity } from '../contexts/SecurityContext';
 import { cn } from '../lib/utils';
 import { Transaction, TransactionType } from '../types';
-import { initDB, saveTransaction, saveCustomer } from '../lib/db';
+import { addTransaction } from '../lib/db';
 import { INITIAL_STATS, calculateNewStats } from '../lib/gamification';
 
 const AddTransaction = () => {
@@ -37,14 +37,11 @@ const AddTransaction = () => {
       lastTransactionAt: Date.now()
     };
 
-    const db = await initDB();
     const currentStats = stats || INITIAL_STATS;
-    const allTx = await db.getAllFromIndex('transactions', 'by-customer', customer.id);
-    const newStats = calculateNewStats(currentStats, [...allTx, tx], tx);
+    const allTx = customers.find(c => c.id === selectedId) ? [] : []; // We use the customer tx list from engine or history if needed, but for score delta tx is enough
+    const newStats = calculateNewStats(currentStats, [], tx);
 
-    await saveTransaction(tx);
-    await saveCustomer(updatedCustomer, pin);
-    await db.put('stats', newStats, 'current');
+    await addTransaction(tx, updatedCustomer, newStats, pin);
     
     await refresh();
     navigate('/habits');
@@ -72,7 +69,14 @@ const AddTransaction = () => {
             <label className="text-[10px] font-black text-slate-500 uppercase italic tracking-widest ml-1">টাকার পরিমাণ</label>
             <div className="relative">
               <span className="absolute left-5 top-1/2 -translate-y-1/2 font-black text-slate-400 text-2xl font-display">৳</span>
-              <input type="number" placeholder="0.00" className="input-field pl-12 text-3xl font-black font-display italic border-2 border-slate-900 shadow-[3px_3px_0px_rgba(0,0,0,1)]" value={amount} onChange={(e) => setAmount(e.target.value)} />
+              <input 
+                type="number" 
+                inputMode="decimal"
+                placeholder="0.00" 
+                className="input-field pl-12 text-3xl font-black font-display italic border-2 border-slate-900 shadow-[3px_3px_0px_rgba(0,0,0,1)]" 
+                value={amount} 
+                onChange={(e) => setAmount(e.target.value)} 
+              />
             </div>
           </div>
           <div className="space-y-1">

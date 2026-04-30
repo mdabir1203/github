@@ -21,6 +21,12 @@ export interface Translations {
   rewards_title: string;
   badges_title: string;
   perks_title: string;
+  feedback_title: string;
+  feedback_prompt: string;
+  feedback_voice: string;
+  feedback_video: string;
+  feedback_text: string;
+  feedback_submit: string;
 }
 
 export const DIALECT_DATA: Record<Dialect, Translations> = {
@@ -44,7 +50,13 @@ export const DIALECT_DATA: Record<Dialect, Translations> = {
     nav_history: "কিচ্ছা",
     rewards_title: "জিতন",
     badges_title: "আপনার পদক",
-    perks_title: "সুবিধা আনলক"
+    perks_title: "সুবিধা আনলক",
+    feedback_title: "সাপোর্ট ও মতামত",
+    feedback_prompt: "অ্যাপটি কেমন লাগছে? কোনো সমস্যা বা উন্নতির পরামর্শ থাকলে জানান।",
+    feedback_voice: "মুখে বলুন",
+    feedback_video: "ভিডিও বার্তা",
+    feedback_text: "লিখে জানান",
+    feedback_submit: "পাঠিয়ে দিন বস"
   },
   CHITTAGONIAN: {
     welcome: "লেনদেনত আইয়ুন্",
@@ -66,7 +78,13 @@ export const DIALECT_DATA: Record<Dialect, Translations> = {
     nav_history: "কিচ্ছা",
     rewards_title: "জিতুন (REWARDS)",
     badges_title: "অন্নের মেডেল",
-    perks_title: "নয়া সুযোগ"
+    perks_title: "নয়া সুযোগ",
+    feedback_title: "সাহায্য ও পরামর্শ",
+    feedback_prompt: "অন্নের কোন সমস্যা আর নি? অ্যাপ কেন চলের আমত্তে জানান!",
+    feedback_voice: "রবে কইন (Voice)",
+    feedback_video: "ভিডিওত দেখান",
+    feedback_text: "লেখি দুন",
+    feedback_submit: "মারি দুন (Submit)"
   },
   SYLHETI: {
     welcome: "লেনদেনো খুশ আমদেদ",
@@ -88,7 +106,13 @@ export const DIALECT_DATA: Record<Dialect, Translations> = {
     nav_history: "কিচ্ছা",
     rewards_title: "বখশিস",
     badges_title: "আপনার শীল",
-    perks_title: "খুলা হগলি"
+    perks_title: "খুলা হগলি",
+    feedback_title: "সাপোর্ট ও বয়ান",
+    feedback_prompt: "কোনো মুশকিল অইলে কও, আর কি উন্নত করা যায় জানাও!",
+    feedback_voice: "মাতিয়া কও (Voice)",
+    feedback_video: "ভিডিও দেখাও",
+    feedback_text: "লেখো",
+    feedback_submit: "পাঠাও"
   },
   BARISHAILLA: {
     welcome: "লেনদেনে আইছেন মোরা",
@@ -110,7 +134,13 @@ export const DIALECT_DATA: Record<Dialect, Translations> = {
     nav_history: "কিচ্ছা",
     rewards_title: "ইনাম",
     badges_title: "মোয়া-মেডেল",
-    perks_title: "বাড়তি পাওনা"
+    perks_title: "বাড়তি পাওনা",
+    feedback_title: "মদদ ও নালিশ",
+    feedback_prompt: "কোনো প্যাঁচ লাগলে মোরে কন, অ্যাপ কামে লাগে কি না হেইডাও কন!",
+    feedback_voice: "মুখে কন (Voice)",
+    feedback_video: "মুহ দেহান (Video)",
+    feedback_text: "লেখেন দেহি",
+    feedback_submit: "পাঠান দেহি"
   },
   DHAKAIYYA: {
     welcome: "লেনদেন মে আপকা সোয়াগত হ্যায়",
@@ -132,7 +162,13 @@ export const DIALECT_DATA: Record<Dialect, Translations> = {
     nav_history: "কিচ্ছা",
     rewards_title: "রিওয়ার্ডস",
     badges_title: "গলার মালা",
-    perks_title: "ওপেন করো"
+    perks_title: "ওপেন করো",
+    feedback_title: "মদদ ও মাশুয়ারা",
+    feedback_prompt: "মামুরে কোনো ঝামেলা আছে? অ্যাপে কোনো নতুন কিচ্ছু লাগব? কন!",
+    feedback_voice: "বুলি মারেন (Voice)",
+    feedback_video: "ভিডিও বার্তা",
+    feedback_text: "লেখেন দেখি",
+    feedback_submit: "কাম সারেন"
   },
   BANGLISH: {
     welcome: "Welcome to Lenden",
@@ -154,6 +190,12 @@ export const DIALECT_DATA: Record<Dialect, Translations> = {
     nav_history: "History",
     rewards_title: "Rewards",
     badges_title: "Your Badges",
-    perks_title: "Unlock Perks"
+    perks_title: "Unlock Perks",
+    feedback_title: "Support & Feedback",
+    feedback_prompt: "Having issues or have a feature idea? Let us know!",
+    feedback_voice: "Voice Support",
+    feedback_video: "Video Support",
+    feedback_text: "Write to us",
+    feedback_submit: "Send Ticket"
   }
 };

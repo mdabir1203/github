@@ -88,6 +88,19 @@ async function processCustomerFromStorage(customer: Customer, pin?: string | nul
   return decryptedCustomer;
 }
 
+export async function addTransaction(tx: Transaction, updatedCustomer: Customer, stats: UserStats, pin?: string | null) {
+  const db = await getDB();
+  const transaction = db.transaction(['transactions', 'customers', 'stats'], 'readwrite');
+  
+  const processedCustomer = await processCustomerForStorage(updatedCustomer, pin);
+  
+  await transaction.objectStore('transactions').put(tx);
+  await transaction.objectStore('customers').put(processedCustomer);
+  await transaction.objectStore('stats').put({ ...stats, id: 'current' });
+  
+  await transaction.done;
+}
+
 export async function saveCustomer(customer: Customer, pin?: string | null) {
   const db = await getDB();
   const processed = await processCustomerForStorage(customer, pin);

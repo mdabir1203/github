@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as Comlink from 'comlink';
-import { Customer, UserStats } from '../types';
+import { Customer, UserStats, Transaction } from '../types';
 import { getCustomers, getStats, getTransactions } from '../lib/db';
 import { useSecurity } from '../contexts/SecurityContext';
 
@@ -11,6 +11,7 @@ const engine = Comlink.wrap<any>(worker);
 export const useLendenData = () => {
   const { pin, isLocked } = useSecurity();
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [stats, setStats] = useState<UserStats | null>(null);
   const [insights, setInsights] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,6 +32,7 @@ export const useLendenData = () => {
       ]);
       
       setCustomers(c.sort((a, b) => b.lastTransactionAt - a.lastTransactionAt));
+      setTransactions(txs.sort((a, b) => b.timestamp - a.timestamp));
       setStats({ ...s, ...workerStats });
       setInsights(learningInsights);
     } catch (e) {
@@ -44,5 +46,5 @@ export const useLendenData = () => {
     loadData();
   }, [loadData]);
 
-  return { customers, setCustomers, stats, setStats, insights, isLoading, refresh: loadData };
+  return { customers, setCustomers, transactions, stats, setStats, insights, isLoading, refresh: loadData };
 };

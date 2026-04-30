@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowUpRight, ArrowDownLeft, Zap, TrendingUp, Award } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, Zap, TrendingUp, Award, LifeBuoy, ChevronRight } from 'lucide-react';
 import { formatCurrency, formatDate, cn } from '../lib/utils';
 import { PageWrapper } from '../components/PageWrapper';
 import { useLendenData } from '../hooks/useLendenData';
@@ -160,6 +160,35 @@ const Dashboard = () => {
             )}
           </div>
         </div>
+
+        {/* Feedback & Support Entry */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          onClick={() => navigate('/review-adda')}
+          className="card-street bg-white dark:bg-slate-900 border-2 border-slate-900 p-5 flex items-center justify-between group cursor-pointer overflow-hidden relative"
+        >
+          <div className="absolute top-0 right-0 p-2 bg-brand-primary text-slate-950 font-black text-[8px] uppercase italic rounded-bl-xl shadow-md z-10">
+            Submit Ticket
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-brand-primary/10 flex items-center justify-center text-brand-primary border-2 border-brand-primary group-hover:bg-brand-primary group-hover:text-slate-950 transition-all shadow-[3px_3px_0px_rgba(0,0,0,1)]">
+              <LifeBuoy size={24} />
+            </div>
+            <div>
+              <div className="font-black font-display text-lg tracking-tight leading-none uppercase italic">{t.feedback_title}</div>
+              <div className="text-[10px] font-bold text-slate-400 uppercase italic mt-1">Found a bug? Have an idea? Let us know!</div>
+            </div>
+          </div>
+          <motion.div
+            animate={{ x: [0, 5, 0] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="text-brand-primary"
+          >
+            <ChevronRight size={20} />
+          </motion.div>
+        </motion.div>
       </div>
     </PageWrapper>
   );

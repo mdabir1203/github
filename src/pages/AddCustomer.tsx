@@ -55,16 +55,16 @@ const AddCustomer = () => {
           </div>
           <div className="space-y-1">
             <label className="text-[10px] font-black text-slate-500 uppercase italic tracking-widest ml-1">মোবাইল নম্বর</label>
-            <input type="tel" placeholder="উদা: 017XXXXXXXX" className="input-field border-2 border-slate-900 shadow-[3px_3px_0px_rgba(0,0,0,1)]" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+            <input type="tel" inputMode="tel" placeholder="উদা: 017XXXXXXXX" className="input-field border-2 border-slate-900 shadow-[3px_3px_0px_rgba(0,0,0,1)]" value={phone} onChange={(e) => setPhone(e.target.value)} required />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="text-[10px] font-black text-slate-500 uppercase italic tracking-widest ml-1">এনআইডি (NID)</label>
-              <input type="number" className="input-field border-2 border-slate-900 shadow-[3px_3px_0px_rgba(0,0,0,1)]" value={nid} onChange={(e) => setNid(e.target.value)} />
+              <input type="number" inputMode="numeric" className="input-field border-2 border-slate-900 shadow-[3px_3px_0px_rgba(0,0,0,1)]" value={nid} onChange={(e) => setNid(e.target.value)} />
             </div>
             <div className="space-y-1">
               <label className="text-[10px] font-black text-slate-500 uppercase italic tracking-widest ml-1">বিকাশ নম্বর</label>
-              <input type="tel" className="input-field border-2 border-slate-900 shadow-[3px_3px_0px_rgba(0,0,0,1)]" value={bkash} onChange={(e) => setBkash(e.target.value)} />
+              <input type="tel" inputMode="tel" className="input-field border-2 border-slate-900 shadow-[3px_3px_0px_rgba(0,0,0,1)]" value={bkash} onChange={(e) => setBkash(e.target.value)} />
             </div>
           </div>
           <button type="submit" className="btn-street w-full mt-4 text-lg">কাস্টমার সেভ করুন ক্যান!</button>
