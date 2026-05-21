@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ChevronRight, Phone, ArrowUpRight, ArrowDownLeft, History as HistoryIcon, 
-  Zap, MessageSquare, PhoneCall, Gift, CheckCircle2, ShieldAlert, Share2, Award, 
-  Sparkles, RefreshCcw, HelpCircle, Volume2
+  Zap, MessageSquare, PhoneCall, CheckCircle2, ShieldAlert, Share2, Award, 
+  RefreshCcw, Volume2
 } from 'lucide-react';
 import { PageWrapper } from '../components/PageWrapper';
 import { useLendenData } from '../hooks/useLendenData';
@@ -12,6 +12,7 @@ import { getTransactionsByCustomer, saveStats } from '../lib/db';
 import { cn, formatCurrency, formatDate, maskNID } from '../lib/utils';
 import { pixel } from '../lib/pixel';
 import { useLanguage } from '../contexts/LanguageContext';
+import { motion } from 'framer-motion';
 
 const CustomerDetail = () => {
   const { id } = useParams();
@@ -212,7 +213,7 @@ const CustomerDetail = () => {
 
           <div className="grid grid-cols-1 gap-3">
             {/* Action 1: SMS Taagada */}
-            <div className="card-street bg-white dark:bg-slate-900 border-2 border-slate-900 p-4 flex justify-between items-center group">
+            <div className="card-street bg-white dark:bg-slate-900 border-2 border-slate-900 p-4 flex justify-between items-center group animate-fade-in">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-sky-50 dark:bg-sky-950 flex items-center justify-center text-sky-500 border border-sky-200">
                   <MessageSquare size={18} />
@@ -225,9 +226,9 @@ const CustomerDetail = () => {
 
               <button 
                 onClick={triggerSmsAlert}
-                className="btn-street bg-sky-500 text-white text-[11px] font-black italic uppercase px-3.5 py-2.5 border-2 border-slate-900 shadow-[3px_3px_0px_rgba(0,0,0,1)] flex items-center gap-1"
+                className="btn-street bg-sky-500 text-white text-[11px] font-black italic uppercase px-3.5 py-2.5 border-2 border-slate-900 shadow-[3px_3px_0px_rgba(0,0,0,1)] flex items-center gap-1 cursor-pointer"
               >
-                <Zap size={10} className="fill-white" />
+                <Zap size={10} className="fill-white animate-pulse" />
                 ১০ কয়েন
               </button>
             </div>
@@ -246,9 +247,9 @@ const CustomerDetail = () => {
 
               <button 
                 onClick={triggerRoboCall}
-                className="btn-street bg-amber-500 text-white text-[11px] font-black italic uppercase px-3.5 py-2.5 border-2 border-slate-900 shadow-[3px_3px_0px_rgba(0,0,0,1)] flex items-center gap-1"
+                className="btn-street bg-amber-500 text-white text-[11px] font-black italic uppercase px-3.5 py-2.5 border-2 border-slate-900 shadow-[3px_3px_0px_rgba(0,0,0,1)] flex items-center gap-1 cursor-pointer"
               >
-                <Zap size={10} className="fill-white" />
+                <Zap size={10} className="fill-white animate-pulse" />
                 ২৫ কয়েন
               </button>
             </div>
@@ -267,9 +268,9 @@ const CustomerDetail = () => {
 
               <button 
                 onClick={triggerStatementShare}
-                className="btn-street bg-rose-500 text-white text-[11px] font-black italic uppercase px-3.5 py-2.5 border-2 border-slate-900 shadow-[3px_3px_0px_rgba(0,0,0,1)] flex items-center gap-1"
+                className="btn-street bg-rose-500 text-white text-[11px] font-black italic uppercase px-3.5 py-2.5 border-2 border-slate-900 shadow-[3px_3px_0px_rgba(0,0,0,1)] flex items-center gap-1 cursor-pointer"
               >
-                <Zap size={10} className="fill-white" />
+                <Zap size={10} className="fill-white animate-pulse" />
                 ১৫ কয়েন
               </button>
             </div>
@@ -368,7 +369,42 @@ const CustomerDetail = () => {
                   </div>
                   <div className="space-y-1">
                     <h4 className="text-xl font-extrabold text-[#10b981]">কানেক্টেড হয়েছে!</h4>
-                    <p className="text-slate-500 text-xs font-bold">কাস্টমার তাগাদা রিসিভ করেছে। আঞ্চলিক অডিও শোনানো হচ্ছে ক্�        {/* 3. DIGITAL TRUST STATEMENT SHARE */}
+                    <p className="text-slate-500 text-xs font-bold">কাস্টমার তাগাদা রিসিভ করেছে। আঞ্চলিক অডিও শোনানো হচ্ছে ক্যান...</p>
+                  </div>
+                </>
+              )}
+
+              {simStep === 'speaking' && (
+                <>
+                  <div className="w-16 h-16 rounded-full bg-amber-500 border-4 border-slate-900 flex items-center justify-center text-white mx-auto animate-ping">
+                    <Volume2 size={32} />
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="text-xl font-black font-display text-slate-900">রোবো-কল স্পিকিং...</h4>
+                    <div className="p-3 bg-amber-50 rounded-2xl border border-amber-200 text-xs text-amber-900 font-extrabold italic leading-snug">
+                      {getDialectTagline()}
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-slate-400 font-bold">ভয়েস সহকারী বাংলায় তাগাদা বিবরণ শোনাচ্ছে</p>
+                </>
+              )}
+
+              {simStep === 'complete' && (
+                <>
+                  <div className="w-16 h-16 rounded-full bg-emerald-500 border-4 border-slate-900 flex items-center justify-center text-white mx-auto shadow-md">
+                    <CheckCircle2 size={36} />
+                  </div>
+                  <h4 className="text-xl font-black font-display text-slate-900">কল সফলভাবে সম্পন্ন!</h4>
+                  <p className="text-xs text-slate-600 font-medium">কাস্টমারকে ২৫ টি রিচার্জ কয়েনের বিনিময়ে বাংলায় রিমাইন্ডার কল সফলভাবে শোনানো হয়েছে ক্যান!</p>
+                  
+                  <button onClick={() => setActiveSimulation(null)} className="btn-street w-full py-2.5 bg-slate-900 text-white border-2 border-slate-900 shadow-[4px_4px_0px_rgba(0,0,0,1)]">কল সমাপন</button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* 3. DIGITAL TRUST STATEMENT SHARE */}
         {activeSimulation === 'statement' && (
           <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 z-50">
             <div className="w-full max-w-sm bg-white rounded-3xl p-6 border-4 border-slate-900 shadow-[8px_8px_0px_rgba(0,0,0,1)] text-center space-y-4">
@@ -468,7 +504,7 @@ const CustomerDetail = () => {
 
               <button 
                 onClick={() => setActiveSimulation(null)} 
-                className="text-slate-400 font-bold hover:text-slate-600 text-[10px] uppercase block w-full text-center"
+                className="text-slate-400 font-bold hover:text-slate-600 text-[10px] uppercase block w-full text-center cursor-pointer"
               >
                 পরে করবো ক্যান
               </button>
@@ -476,68 +512,6 @@ const CustomerDetail = () => {
           </div>
         )}
 
-      </div>
-    </PageWrapper>
-  );
-};
-
-export default CustomerDetail;<div className="space-y-2">
-                <h4 className="text-2xl font-black font-display leading-tight text-slate-900 uppercase italic">কয়েন শেষ হয়ে গেছে মামা!</h4>
-                <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                  আপনার লেন্দেন ওয়ালেটে রিমাইন্ডার পাঠানোর জন্য পর্যাপ্ত কয়েন অবশিষ্ট নাই ক্যান! দয়া করে কয়েন রিচার্জ করুন অথবা ফ্রি এড দেখে কয়েন সংগ্রহ করুন।
-                </p>
-              </div>
-
-              <div className="p-3 bg-rose-50 border border-rose-200 rounded-2xl flex items-center justify-between">
-                <span className="text-[10px] text-rose-700 font-black uppercase">বর্তমান ব্যালেন্স:</span>
-                <span className="text-rose-600 font-black font-mono flex items-center gap-1">
-                  <Zap size={14} className="fill-rose-500 text-rose-500" />
-                  {currentCoins} কয়েন
-                </span>
-              </div>
-
-              <div className="flex gap-3 pt-2">
-                <button 
-                  onClick={() => {
-                    setActiveSimulation(null);
-                    navigate('/store');
-                  }} 
-                  className="flex-1 btn-street py-3 bg-brand-primary text-slate-950 font-black italic uppercase text-xs shadow-[3px_3px_0px_rgba(0,0,0,1)] border-2 border-slate-900 flex items-center justify-center gap-1"
-                >
-                  🪙 রিচার্জ স্টোর
-                </button>
-                <button 
-                  onClick={() => {
-                    setActiveSimulation(null);
-                    navigate('/store');
-                  }} 
-                  className="flex-1 btn-street py-3 bg-white text-slate-950 font-black italic uppercase text-xs shadow-[3px_3px_0px_rgba(0,0,0,1)] border-2 border-slate-900 flex items-center justify-center gap-1"
-                >
-                  🎥 ফ্রি এড দেখুন
-                </button>
-              </div>
-
-              <button 
-                onClick={() => setActiveSimulation(null)} 
-                className="text-slate-400 font-bold hover:text-slate-600 text-[10px] uppercase block w-full text-center"
-              >
-                পরে করবো ক্যান
-              </button>
-            </div>
-          </div>
-        )}
-
-      </div>
-    </PageWrapper>
-  );
-};
-
-export default CustomerDetail;
-0,0,0,1)] flex items-center justify-center gap-3">
-            <Phone size={22} fill="currentColor" />
-            <span className="text-lg">এসএমএস হত্তন (SEND SMS)</span>
-          </button>
-        </div>
       </div>
     </PageWrapper>
   );
