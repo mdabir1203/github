@@ -45,7 +45,7 @@ service cloud.firestore {
 
     match /posts/{postId} {
       allow get: if isSignedIn();
-      allow list: if isSignedIn() && resource.data.authorId is string; // explicit resource check 
+      allow list: if isSignedIn() && resource.data != null && resource.data.keys().size() > 0; // explicit resource check
 
       allow create: if isSignedIn() && 
                       incoming().authorId == request.auth.uid &&
