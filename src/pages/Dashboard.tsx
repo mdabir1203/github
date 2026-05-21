@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowUpRight, ArrowDownLeft, Zap, TrendingUp, Award, LifeBuoy, ChevronRight, Gift } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, Zap, TrendingUp, Award, LifeBuoy, ChevronRight, Gift, Lock, ShieldCheck } from 'lucide-react';
 import { formatCurrency, formatDate, cn } from '../lib/utils';
 import { PageWrapper } from '../components/PageWrapper';
 import { useLendenData } from '../hooks/useLendenData';
@@ -35,6 +35,24 @@ const Dashboard = () => {
   return (
     <PageWrapper>
       <div className="space-y-6">
+        {/* Trust & Control Banner */}
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-slate-900 border-2 border-slate-900 rounded-2xl p-4 flex items-center justify-between shadow-[4px_4px_0px_rgba(0,0,0,1)] relative overflow-hidden"
+        >
+          <div className="absolute top-[-20%] right-[-5%] opacity-10">
+            <Lock size={100} className="text-white" />
+          </div>
+          <div className="relative z-10 flex gap-4 items-center">
+            <ShieldCheck size={32} className="text-brand-primary" />
+            <div>
+              <h3 className="text-white font-black uppercase text-sm italic font-display">আপনার খাতা, আপনার নিয়ন্ত্রণ</h3>
+              <p className="text-slate-400 text-[10px] font-bold uppercase mt-0.5">100% সুরক্ষিত • কোন অটো-ডেবিট নেই</p>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Intelligence Hub (CoreML principle) */}
         {insights && (
           <motion.div 

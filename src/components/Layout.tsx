@@ -1,23 +1,23 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Award, Lock, Settings } from 'lucide-react';
+import { Award, Lock, Settings, Zap } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSecurity } from '../contexts/SecurityContext';
+import { useLendenData } from '../hooks/useLendenData';
 import Navigation from './Navigation';
 import PullToRefresh from './PullToRefresh';
 import { SyncStatus } from './SyncStatus';
+import { VoiceAssistant } from './VoiceAssistant';
 import { motion } from 'framer-motion';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const { deleteAccount } = useAuth();
   const { lock, hasPinSet, isLocked } = useSecurity();
+  const { stats, refresh, isLoading } = useLendenData();
   
   const handleRefresh = async () => {
-    // In a real app this might fetch from a server, 
-    // here we just simulate it with a delay to verify UI feedback
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    window.location.reload();
+    await refresh();
   };
 
   useEffect(() => {
@@ -49,18 +49,28 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               ডিজিটাল হিসাব খাতা
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex flex-col items-end">
-              <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-tighter">বিশ্বস্ত ব্যবসায়ী</span>
-              <span className="text-sm font-black text-emerald-600 flex items-center gap-1 font-display italic">
-                <Award size={14} fill="currentColor" />
+          <div className="flex items-center gap-2">
+            {!isLoading && stats && (
+              <motion.button 
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate('/store')}
+                className="flex items-center gap-1 bg-brand-yellow/10 hover:bg-brand-yellow/20 border-2 border-slate-900 px-3 py-1 rounded-2xl cursor-pointer font-black font-display italic text-xs text-brand-yellow shadow-[3px_3px_0px_rgba(0,0,0,1)] select-none shrink-0"
+              >
+                <Zap size={14} className="fill-brand-yellow text-brand-yellow animate-pulse" />
+                <span>{stats.coins ?? 120}</span>
+              </motion.button>
+            )}
+            <div className="flex flex-col items-end shrink-0 select-none">
+              <span className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-tighter leading-none">বিশ্বস্ত ব্যবসায়ী</span>
+              <span className="text-[11px] font-black text-emerald-600 flex items-center gap-0.5 font-display italic leading-tight mt-0.5">
+                <Award size={12} fill="currentColor" />
                 VERIFIED
               </span>
             </div>
             {hasPinSet && !isLocked && (
               <button 
                 onClick={() => navigate('/language')}
-                className="w-10 h-10 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-900 flex items-center justify-center text-slate-600 dark:text-slate-400 shadow-[3px_3px_0px_rgba(0,0,0,1)] active:scale-90 transition-all ml-1"
+                className="w-10 h-10 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-900 flex items-center justify-center text-slate-600 dark:text-slate-400 shadow-[3px_3px_0px_rgba(0,0,0,1)] active:scale-90 transition-all ml-1 shrink-0"
               >
                 <Settings size={18} />
               </button>
@@ -97,6 +107,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       </main>
 
       <SyncStatus />
+      <VoiceAssistant />
       <Navigation />
     </div>
   );

@@ -2,7 +2,7 @@
  * Lenden Scalability Engine (Worker Thread)
  * 
  * This worker handles all intensive data operations (aggregation, 
- * noise-injection for differential privacy, and binary serialization) 
+ * noise-injection for differential privacy, and payload compression) 
  * to ensure 120fps UI performance even with 10M+ transaction simulations.
  */
 
@@ -74,14 +74,47 @@ export const ScalabilityEngine = {
   },
 
   /**
-   * Simulates binary Protobuf serialization for ultra-low latency data transfer
+   * Compresses data using native CompressionStream for ultra-low latency data transfer
+   * over unstable/slow Bengali village networks.
    */
   async optimizePayload(data: any): Promise<Uint8Array> {
-    // In a full production build, this would use a generated .proto class
-    // Here we simulate the binary overhead reduction
     const json = JSON.stringify(data);
     const encoder = new TextEncoder();
-    return encoder.encode(json); // Simplified: Real Protobuf would use binary packing
+    const encoded = encoder.encode(json);
+    
+    try {
+      if ('CompressionStream' in globalThis) {
+        const stream = new ReadableStream({
+          start(controller) {
+            controller.enqueue(encoded);
+            controller.close();
+          }
+        });
+        // Type assertion for TS to ignore dom lib version lacking this
+        const compressedStream = stream.pipeThrough(new (globalThis as any).CompressionStream('gzip'));
+        
+        const chunks = [];
+        const reader = compressedStream.getReader();
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks.push(value);
+        }
+        
+        const totalLength = chunks.reduce((acc, val) => acc + val.length, 0);
+        const result = new Uint8Array(totalLength);
+        let offset = 0;
+        for (const chunk of chunks) {
+          result.set(chunk, offset);
+          offset += chunk.length;
+        }
+        return result;
+      }
+    } catch (e) {
+      console.warn('Compression failed, falling back to uncompressed binary', e);
+    }
+    
+    return encoded;
   }
 };
 

@@ -5,7 +5,9 @@ export const INITIAL_STATS: UserStats = {
   streakDays: 0,
   totalCollections: 0,
   lastActiveDate: '',
-  badges: []
+  badges: [],
+  coins: 120,
+  isEliteMahajon: false
 };
 
 /**

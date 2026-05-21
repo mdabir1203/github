@@ -13,6 +13,7 @@ import { FeedbackModal } from './components/FeedbackModal';
 const Dashboard = React.lazy(() => import('./pages/Dashboard'));
 const Ledger = React.lazy(() => import('./pages/Ledger'));
 const Rewards = React.lazy(() => import('./pages/Rewards'));
+const LendenStore = React.lazy(() => import('./pages/LendenStore'));
 const History = React.lazy(() => import('./pages/History'));
 const Adda = React.lazy(() => import('./pages/Adda').then(m => ({ default: m.Adda })));
 const ShopMap = React.lazy(() => import('./pages/ShopMap').then(m => ({ default: m.ShopMap })));
@@ -73,6 +74,7 @@ export default function App() {
             <Route path="/habits" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/patterns" element={<ProtectedRoute><Ledger /></ProtectedRoute>} />
             <Route path="/beliefs" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />
+            <Route path="/store" element={<ProtectedRoute><LendenStore /></ProtectedRoute>} />
             <Route path="/receipts" element={<ProtectedRoute><History /></ProtectedRoute>} />
             <Route path="/add" element={<ProtectedRoute><AddTransaction /></ProtectedRoute>} />
             <Route path="/add-customer" element={<ProtectedRoute><AddCustomer /></ProtectedRoute>} />

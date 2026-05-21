@@ -159,11 +159,19 @@ export async function getStats() {
       totalCollections: 0,
       lastActiveDate: '',
       badges: [],
+      coins: 120,
+      isEliteMahajon: false
     };
     await db.put('stats', defaultStats);
     return defaultStats;
   }
-  return stats as UserStats;
+  
+  // Backward compatibility backfill
+  const sanitizedStats = { ...stats };
+  if (sanitizedStats.coins === undefined) sanitizedStats.coins = 120;
+  if (sanitizedStats.isEliteMahajon === undefined) sanitizedStats.isEliteMahajon = false;
+  
+  return sanitizedStats as UserStats;
 }
 
 export async function saveStats(stats: UserStats) {

@@ -11,7 +11,7 @@ import {
   Phone
 } from 'lucide-react';
 import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, doc, getDoc, setDoc } from 'firebase/firestore';
-import { db, auth, googleProvider } from '../lib/firebase';
+import { db, auth, googleProvider, handleFirestoreError, OperationType } from '../lib/firebase';
 import { signInWithPopup, onAuthStateChanged } from 'firebase/auth';
 import { PageWrapper } from '../components/PageWrapper';
 import { cn } from '../lib/utils';
@@ -39,10 +39,14 @@ export const Adda = () => {
     const unsubAuth = onAuthStateChanged(auth, async (u) => {
       setUser(u);
       if (u) {
-        const userDoc = await getDoc(doc(db, 'users', u.uid));
-        if (userDoc.exists() && userDoc.data().whatsapp) {
-          setWhatsapp(userDoc.data().whatsapp);
-          localStorage.setItem('lenden_user_whatsapp', userDoc.data().whatsapp);
+        try {
+          const userDoc = await getDoc(doc(db, 'users', u.uid));
+          if (userDoc.exists() && userDoc.data().whatsapp) {
+            setWhatsapp(userDoc.data().whatsapp);
+            localStorage.setItem('lenden_user_whatsapp', userDoc.data().whatsapp);
+          }
+        } catch (error) {
+          handleFirestoreError(error, OperationType.GET, `users/${u.uid}`);
         }
       }
     });
@@ -54,6 +58,8 @@ export const Adda = () => {
         ...doc.data()
       })) as Post[];
       setPosts(postsData);
+    }, (error) => {
+      handleFirestoreError(error, OperationType.LIST, 'posts');
     });
 
     return () => {
@@ -79,12 +85,16 @@ export const Adda = () => {
     try {
       // Update profile if whatsapp is set/changed
       if (whatsapp) {
-        await setDoc(doc(db, 'users', user.uid), {
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-          whatsapp: whatsapp
-        }, { merge: true });
-        localStorage.setItem('lenden_user_whatsapp', whatsapp);
+        try {
+          await setDoc(doc(db, 'users', user.uid), {
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            whatsapp: whatsapp
+          }, { merge: true });
+          localStorage.setItem('lenden_user_whatsapp', whatsapp);
+        } catch (error) {
+           handleFirestoreError(error, OperationType.UPDATE, `users/${user.uid}`);
+        }
       }
 
       await addDoc(collection(db, 'posts'), {
@@ -98,7 +108,7 @@ export const Adda = () => {
       });
       setNewPost('');
     } catch (error) {
-      console.error("Post fail:", error);
+      handleFirestoreError(error, OperationType.CREATE, 'posts');
     } finally {
       setIsPosting(false);
     }

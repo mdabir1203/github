@@ -27,6 +27,8 @@ export interface UserStats {
   totalCollections: number;
   lastActiveDate: string; // YYYY-MM-DD
   badges: string[];
+  coins?: number; // Virtual Lenden Coins (কয়েন)
+  isEliteMahajon?: boolean; // Premium user badge
 }
 
 export interface AppState {

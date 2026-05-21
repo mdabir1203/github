@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MapPin, Navigation, Store, Phone, Search, Crosshair, Plus, Smartphone } from 'lucide-react';
 import { PageWrapper } from '../components/PageWrapper';
-import { db, auth } from '../lib/firebase';
+import { db, auth, handleFirestoreError, OperationType } from '../lib/firebase';
 import { collection, query, onSnapshot, doc, updateDoc, serverTimestamp, setDoc, where, addDoc } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth';
 import { cn } from '../lib/utils';
@@ -80,6 +80,9 @@ export const ShopMap = () => {
   const [shopType, setShopType] = useState(SHOP_TYPES[0]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLowEnd, setIsLowEnd] = useState(false);
+  const [locationQuery, setLocationQuery] = useState('');
+  const [isGeocoding, setIsGeocoding] = useState(false);
+  const [mapDistanceFilter, setMapDistanceFilter] = useState<number | null>(null);
 
   const filteredShops = shops.filter(shop => {
     const query = searchQuery.toLowerCase();
@@ -96,13 +99,17 @@ export const ShopMap = () => {
       setUser(u);
       if (u) {
         // Structured behavioral signaling
-        await setDoc(doc(db, 'users', u.uid), {
-          lastActive: serverTimestamp(),
-          deviceInfo: {
-            platform: navigator.platform,
-            isLowEnd: isLowEndDevice()
-          }
-        }, { merge: true });
+        try {
+          await setDoc(doc(db, 'users', u.uid), {
+            lastActive: serverTimestamp(),
+            deviceInfo: {
+              platform: navigator.platform,
+              isLowEnd: isLowEndDevice()
+            }
+          }, { merge: true });
+        } catch (error) {
+          handleFirestoreError(error, OperationType.UPDATE, `users/${u.uid}`);
+        }
       }
     });
 
@@ -113,6 +120,8 @@ export const ShopMap = () => {
         .map(doc => ({ id: doc.id, ...doc.data() } as Shop))
         .filter(s => s.location && s.location.lat && s.location.lng);
       setShops(shopData);
+    }, (error) => {
+      handleFirestoreError(error, OperationType.LIST, 'users');
     });
 
     // Get current user location
@@ -154,7 +163,55 @@ export const ShopMap = () => {
       setIsPinning(false);
       setShopName('');
     } catch (error) {
-      console.error("Error pinning shop:", error);
+       handleFirestoreError(error, OperationType.UPDATE, `users/${user.uid}`);
+    }
+  };
+
+  const handleLocationSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!locationQuery.trim()) return;
+
+    setIsGeocoding(true);
+    try {
+      const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+      let lat: number | null = null;
+      let lng: number | null = null;
+
+      if (apiKey) {
+        // Use Google Maps Geocoding API with constraints to Bangladesh
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+            locationQuery
+          )}&components=country:BD&key=${apiKey}`
+        );
+        const data = await response.json();
+        if (data.results && data.results.length > 0) {
+          lat = data.results[0].geometry.location.lat;
+          lng = data.results[0].geometry.location.lng;
+        }
+      } else {
+        // Fallback to OSM Nominatim
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+            locationQuery
+          )}&countrycodes=bd&limit=1`
+        );
+        const data = await response.json();
+        if (data && data.length > 0) {
+          lat = parseFloat(data[0].lat);
+          lng = parseFloat(data[0].lon);
+        }
+      }
+
+      if (lat !== null && lng !== null) {
+        setUserLocation([lat, lng]);
+      } else {
+        console.warn('Location not found');
+      }
+    } catch (error) {
+      console.error('Geocoding error:', error);
+    } finally {
+      setIsGeocoding(false);
     }
   };
 
@@ -178,17 +235,40 @@ export const ShopMap = () => {
         </div>
 
         {/* Search Bar */}
-        <div className="px-2">
+        <div className="px-2 space-y-2">
           <div className="relative group">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-primary transition-colors" size={20} />
             <input 
               type="text" 
               placeholder="দোকানের নাম বা ধরণ দিয়ে খুজেন..."
-              className="w-full bg-white border-2 border-slate-900 rounded-2xl py-4 pl-12 pr-4 font-bold text-slate-900 shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:translate-x-1 focus:translate-y-1 focus:shadow-none outline-none transition-all"
+              className="w-full bg-white border-2 border-slate-900 rounded-2xl py-3 pl-12 pr-4 font-bold text-slate-900 shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:translate-x-1 focus:translate-y-1 focus:shadow-none outline-none transition-all"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
+          
+          <form onSubmit={handleLocationSearch} className="relative group flex gap-2">
+            <div className="relative flex-1">
+              <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors" size={20} />
+              <input 
+                type="text" 
+                placeholder="এলাকা বা পোস্ট কোড (উদাঃ গুলশান, 1212)"
+                className="w-full bg-white border-2 border-slate-900 rounded-2xl py-3 pl-12 pr-4 font-bold text-slate-900 shadow-[4px_4px_0px_rgba(0,0,0,1)] focus:translate-x-1 focus:translate-y-1 focus:shadow-none outline-none transition-all"
+                value={locationQuery}
+                onChange={(e) => setLocationQuery(e.target.value)}
+              />
+            </div>
+            <button 
+              type="submit" 
+              disabled={isGeocoding || !locationQuery.trim()}
+              className={cn(
+                "px-4 bg-emerald-500 text-white font-black italic uppercase rounded-2xl border-2 border-slate-900 shadow-[4px_4px_0px_rgba(0,0,0,1)] active:translate-y-1 active:shadow-none transition-all",
+                (isGeocoding || !locationQuery.trim()) && "opacity-50 grayscale"
+              )}
+            >
+              {isGeocoding ? '...' : 'খুজুন'}
+            </button>
+          </form>
         </div>
 
         {/* Map Container - 3D Tilted Perspective (Disabled for low-end devices) */}
@@ -231,12 +311,16 @@ export const ShopMap = () => {
                       click: () => {
                         if (user) {
                           // Behavioral Signaling: Log interaction
-                          addDoc(collection(db, 'interactions'), {
-                            userId: user.uid,
-                            targetId: shop.id,
-                            type: 'map_click',
-                            timestamp: serverTimestamp()
-                          });
+                          try {
+                            addDoc(collection(db, 'interactions'), {
+                              userId: user.uid,
+                              targetId: shop.id,
+                              type: 'map_click',
+                              timestamp: serverTimestamp()
+                            });
+                          } catch (error) {
+                            handleFirestoreError(error, OperationType.CREATE, 'interactions');
+                          }
                         }
                       }
                     }}

@@ -6,22 +6,29 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Auth Helpers
     function isSignedIn() {
-      return request.auth != null;
+      return request.auth != null && request.auth.uid != null;
     }
 
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
 
+    // Data Helpers
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
     function isValidPost(data) {
       return data.authorId is string && 
-             data.authorId.size() <= 128 &&
+             data.authorId.size() >= 1 && data.authorId.size() <= 128 &&
              data.content is string && 
-             data.content.size() <= 1000 &&
+             data.content.size() >= 1 && data.content.size() <= 1000 &&
              data.authorName is string &&
-             data.authorName.size() <= 50 &&
-             (!('whatsapp' in data) || (data.whatsapp is string && data.whatsapp.size() <= 20));
+             data.authorName.size() >= 1 && data.authorName.size() <= 50 &&
+             data.likes is number &&
+             (!('whatsapp' in data) || (data.whatsapp is string && data.whatsapp.size() <= 20)) &&
+             (!('authorPhoto' in data) || (data.authorPhoto is string && data.authorPhoto.size() <= 500));
     }
 
     function isValidProfile(data) {
@@ -29,25 +36,50 @@ service cloud.firestore {
              (!('shopType' in data) || (data.shopType is string && data.shopType.size() <= 50)) &&
              (!('whatsapp' in data) || (data.whatsapp is string && data.whatsapp.size() <= 20)) &&
              (!('isEnlisted' in data) || (data.isEnlisted is bool)) &&
-             (!('location' in data) || (data.location is map && data.location.lat is number && data.location.lng is number));
+             (!('location' in data) || (data.location is map && data.location.lat is number && data.location.lng is number)) &&
+             (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 100)) &&
+             (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 500)) &&
+             (!('deviceInfo' in data) || data.deviceInfo is map) &&
+             (!('lastActive' in data) || data.lastActive is timestamp);
     }
 
     match /posts/{postId} {
-      allow read: if true; // Publicly readable forum
+      allow get: if isSignedIn();
+      allow list: if isSignedIn() && resource.data.authorId is string; // explicit resource check 
+
       allow create: if isSignedIn() && 
-                      request.resource.data.authorId == request.auth.uid &&
-                      isValidPost(request.resource.data);
-      allow update, delete: if isOwner(resource.data.authorId);
+                      incoming().authorId == request.auth.uid &&
+                      incoming().keys().hasAll(['authorId', 'content', 'authorName', 'createdAt', 'likes']) &&
+                      incoming().keys().hasOnly(['authorId', 'content', 'authorName', 'createdAt', 'likes', 'whatsapp', 'authorPhoto']) &&
+                      isValidPost(incoming());
+
+      allow update: if isOwner(existing().authorId) &&
+                      isValidPost(incoming()) &&
+                      (
+                        (incoming().diff(existing()).affectedKeys().hasOnly(['likes'])) ||
+                        (incoming().diff(existing()).affectedKeys().hasOnly(['content', 'whatsapp', 'authorName']))
+                      ) &&
+                      incoming().authorId == existing().authorId;
+
+      allow delete: if isOwner(existing().authorId);
     }
 
     match /users/{userId} {
-      allow read: if true;
-      allow write: if isOwner(userId) && isValidProfile(request.resource.data);
+      allow get: if isSignedIn() || resource.data.isEnlisted == true;
+      allow list: if resource.data.isEnlisted == true || (isSignedIn() && resource.data.isEnlisted == true);
+      
+      allow create: if isOwner(userId) && 
+                      isValidProfile(incoming()) &&
+                      incoming().keys().hasOnly(['shopName', 'shopType', 'whatsapp', 'isEnlisted', 'location', 'displayName', 'photoURL', 'lastActive', 'deviceInfo']);
+
+      allow update: if isOwner(userId) && 
+                      isValidProfile(incoming()) &&
+                      incoming().diff(existing()).affectedKeys().hasOnly(['shopName', 'shopType', 'whatsapp', 'isEnlisted', 'location', 'displayName', 'photoURL', 'lastActive', 'deviceInfo']);
     }
 
     match /interactions/{interactionId} {
-      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      allow read, update, delete: if false; // Private intelligence
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid;
+      allow read, update, delete: if false; 
     }
   }
 }
